@@ -21,8 +21,16 @@ export class DashboardComponent {
 
   // Logout method
   logout() {
-    this.authService.logout(); // Call logout from AuthService
-    this.openDialog('Logout successful'); // Show notification
+    this.authService.logout().subscribe({
+      next: () => {
+        this.openDialog('Logout successful');
+      },
+      error: (err) => {
+        console.error('Logout failed', err);
+        this.openDialog(err.error.message);
+        // Optionally show an error message to the user
+      }
+    }); // Call logout from AuthService
     this.router.navigate(['/login']); // Redirect to login page after logout
   }
 
