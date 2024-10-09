@@ -10,13 +10,15 @@ import {DashboardComponent} from './pages/dashboard/dashboard.component';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {NotificationDialogComponent} from './components/notification-dialog/notification-dialog.component';
 import {MatDialogActions, MatDialogContent} from "@angular/material/dialog";
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
         DashboardComponent,
-        NotificationDialogComponent
+        NotificationDialogComponent,
+        ProfileComponent
     ],
     imports: [
         BrowserModule,

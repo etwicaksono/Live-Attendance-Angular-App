@@ -32,4 +32,29 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
+
+  // Method to get the user profile data
+  async getUserProfile() {
+    const user = localStorage.getItem('user')
+    let userData = {}
+
+    if (user) {
+      console.debug('retrieve data from localstorage')
+      userData = JSON.parse(user);
+    } else {
+      console.debug('retrieve data from api')
+      const bearerToken = localStorage.getItem('token')
+      await this.http.get(`${environment.apiURl}/my-profile`, {headers: {'Authorization': `Bearer ${bearerToken}`}})
+        .pipe(
+          tap((response: any) => {
+            if (response.success == 1) {
+              localStorage.setItem('user', JSON.stringify(response.data));  // Save the token in localStorage
+              userData = response.data
+            }
+          })
+        ).toPromise();
+    }
+
+    return userData
+  }
 }
