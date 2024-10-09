@@ -5,7 +5,17 @@
   "projects": {
     "live-attendance-angular-app": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -93,6 +103,6 @@
     }
   },
   "cli": {
-    "analytics": "c57ed911-339b-4583-b165-dd471cf6246e"
+    "analytics": "9fd5227f-7842-41be-b8fe-dc85b056f933"
   }
 }
