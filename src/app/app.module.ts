@@ -6,24 +6,29 @@ import {AppComponent} from './app.component';
 import {LoginComponent} from './pages/login/login.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import {DashboardComponent} from './pages/dashboard/dashboard.component';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {NotificationDialogComponent} from './components/notification-dialog/notification-dialog.component';
+import {MatDialogActions, MatDialogContent} from "@angular/material/dialog";
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
-        DashboardComponent
+        DashboardComponent,
+        NotificationDialogComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         ReactiveFormsModule,
         HttpClientModule,
+        MatDialogContent,
+        MatDialogActions,
     ],
     providers: [
-    provideAnimationsAsync()
-  ],
+        provideAnimationsAsync()
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
