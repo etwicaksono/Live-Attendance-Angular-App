@@ -24,16 +24,6 @@
             Dashboard
           </a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn$ | async">
-          <a
-            class="nav-link"
-            routerLink="/my-profile"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            My Profile
-          </a>
-        </li>
         <li class="nav-item" *ngIf="(isLoggedIn$ | async) && (userRole$ | async) == 'admin'">
           <a
             class="nav-link"
@@ -56,8 +46,31 @@
         </li>
       </ul>
       <ul class="navbar-nav ms-auto mt-2 mt-lg-0" *ngIf="isLoggedIn$ | async">
-        <li class="nav-item">
-          <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="profileDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Profile
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+            <li>
+              <a class="dropdown-item" routerLink="/my-profile" routerLinkActive="active"
+                 [routerLinkActiveOptions]="{ exact: true }">
+                My Profile
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <button class="dropdown-item" (click)="logout()">Logout</button>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
