@@ -48,14 +48,16 @@
       <ul class="navbar-nav ms-auto mt-2 mt-lg-0" *ngIf="isLoggedIn$ | async">
         <li class="nav-item dropdown">
           <a
-            class="nav-link dropdown-toggle"
+            class="nav-link dropdown-toggle d-flex align-items-center"
             href="#"
             id="profileDropdown"
             role="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Profile
+            <span class="initial-circle d-flex justify-content-center align-items-center me-2">
+              {{ ('Test')?.charAt(0) | uppercase }}
+            </span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
             <li>

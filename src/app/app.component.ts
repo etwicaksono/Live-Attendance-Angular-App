@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Observable} from "rxjs";
 import {AuthService} from "./services/auth.service";
 import {Router} from "@angular/router";
@@ -18,7 +18,6 @@ export class AppComponent {
     private readonly router: Router,
     private readonly notificationService: NotificationService,
   ) {
-    // Initialize the isLoggedIn$ property in the constructor
     this.isLoggedIn$ = this.authService.isLoggedIn$;
     this.userRole$ = this.authService.userRole$;
   }
