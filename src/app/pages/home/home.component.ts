@@ -18,13 +18,6 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     // Subscribe to the global auth state
     this.isLoggedIn$ = this.authService.isLoggedIn$;
-    console.log('this.isLoggenIn$', this.isLoggedIn$);
-    // Subscribe to the observable to get the emitted value
-    this.isLoggedIn$.subscribe(
-      (isLoggedIn: boolean) => {
-        console.log('isLoggedIn:', isLoggedIn);
-      }
-    );
   }
 
 }
