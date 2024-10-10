@@ -1,4 +1,59 @@
-<!-- app.component.html -->
-<div>
+<nav class="navbar navbar-expand-sm bg-dark-subtle sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">Live Attendance</a>
+    <button
+      class="navbar-toggler d-lg-none"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#collapsibleNavId"
+      aria-controls="collapsibleNavId"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavId">
+      <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+        <li class="nav-item" *ngIf="isLoggedIn$ | async">
+          <a
+            class="nav-link"
+            routerLink="/dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="isLoggedIn$ | async">
+          <a
+            class="nav-link"
+            routerLink="/my-profile"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            My Profile
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="isLoggedIn$ | async">
+          <a
+            class="nav-link"
+            routerLink="/employees"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Employee
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto mt-2 mt-lg-0" *ngIf="isLoggedIn$ | async">
+        <li class="nav-item">
+          <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container min-vh-100">
   <router-outlet></router-outlet>
 </div>
