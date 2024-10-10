@@ -19,9 +19,4 @@ export class DashboardComponent implements OnInit {
       this.userName = userProfile.name;
     });
   }
-
-  // Fetch user profile data from the AuthService
-  async getUserProfile() {
-    return await this.authService.getUserProfile();
-  }
 }

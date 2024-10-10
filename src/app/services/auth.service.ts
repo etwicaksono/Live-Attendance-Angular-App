@@ -11,10 +11,12 @@ export class AuthService {
   // BehaviorSubject to hold the current state of login
   private readonly loggedIn = new BehaviorSubject<boolean>(false);
   private readonly userRole = new BehaviorSubject<string>('');
+  private readonly userName = new BehaviorSubject<string>('');
 
   // Observable for other components to subscribe to
   public isLoggedIn$ = this.loggedIn.asObservable();
   public userRole$ = this.userRole.asObservable();
+  public userName$ = this.userName.asObservable();
 
   constructor(
     private readonly http: HttpClient,
@@ -71,6 +73,7 @@ export class AuthService {
         ).toPromise();
     }
 
+    this.userName.next(userData.name);
     return userData
   }
 

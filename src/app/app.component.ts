@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {AuthService} from "./services/auth.service";
 import {Router} from "@angular/router";
@@ -9,9 +9,10 @@ import {NotificationService} from "./services/notification.service";
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   isLoggedIn$: Observable<boolean>;
   userRole$: Observable<string>;
+  initialName: string = '';
 
   constructor(
     private readonly authService: AuthService,
@@ -20,6 +21,12 @@ export class AppComponent {
   ) {
     this.isLoggedIn$ = this.authService.isLoggedIn$;
     this.userRole$ = this.authService.userRole$;
+  }
+
+  ngOnInit(): void {
+    this.authService.getUserProfile().then((userProfile) => {
+      this.initialName = this.getInitials(userProfile.name);
+    });
   }
 
   logout() {
@@ -34,5 +41,17 @@ export class AppComponent {
       }
     }); // Call logout from AuthService
     this.router.navigate(['']); // Redirect to login page after logout
+  }
+
+  getInitials(fullName: string): string {
+    if (!fullName) return '';
+
+    // Split the full name into words
+    const names = fullName.split(' ');
+
+    // Get the first letter of each word and join them
+    const initials = names.map(name => name.charAt(0).toUpperCase()).join('');
+
+    return initials.substring(0, 2); // Return only the first two initials
   }
 }
