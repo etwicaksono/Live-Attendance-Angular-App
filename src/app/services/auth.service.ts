@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, tap} from "rxjs";
+import {BehaviorSubject, Observable, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environment/environment";
 
@@ -7,8 +7,17 @@ import {environment} from "../../environment/environment";
   providedIn: 'root'
 })
 export class AuthService {
+  // BehaviorSubject to hold the current state of login
+  private readonly loggedIn = new BehaviorSubject<boolean>(false);
 
-  constructor(private readonly http: HttpClient) {
+  // Observable for other components to subscribe to
+  public isLoggedIn$ = this.loggedIn.asObservable();
+
+  constructor(
+    private readonly http: HttpClient,
+  ) {
+    const isLoggedIn = !!localStorage.getItem('token'); // Check if token exists
+    this.loggedIn.next(isLoggedIn);
   }
 
   login(username: string, password: string): Observable<any> {
@@ -16,6 +25,7 @@ export class AuthService {
       .pipe(
         tap((response: any) => {
           if (response.success == 1) {
+            this.loggedIn.next(true);
             localStorage.setItem('token', `Bearer ${response.data.token}`);  // Save the token in localStorage
           }
         })
@@ -25,6 +35,7 @@ export class AuthService {
   logout(): Observable<any> {
     const bearerToken = localStorage.getItem('token')
     localStorage.removeItem('token');
+    this.loggedIn.next(false);
     return this.http.post(`${environment.apiURl}/auth/logout`, null, {headers: {'Authorization': `Bearer ${bearerToken}`}});
   }
 

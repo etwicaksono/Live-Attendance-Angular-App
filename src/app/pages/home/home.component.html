@@ -5,7 +5,7 @@
   <div class="options">
     <button routerLink="/attendance" class="btn">Go to Attendance</button>
     <button routerLink="/report" class="btn">View Reports</button>
-    <button routerLink="/dashboard" class="btn">Dashboard</button>
-    <button routerLink="/login" class="btn">Login</button>
+    <button *ngIf="isLoggedIn$ | async" routerLink="/dashboard" class="btn">Dashboard</button>
+    <button *ngIf="!(isLoggedIn$ | async)" routerLink="/login" class="btn">Login</button>
   </div>
 </div>
