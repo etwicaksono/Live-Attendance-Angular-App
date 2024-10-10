@@ -9,8 +9,9 @@ import {NotificationService} from "./services/notification.service";
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   isLoggedIn$: Observable<boolean>;
+  userRole$: Observable<string>;
 
   constructor(
     private readonly authService: AuthService,
@@ -19,11 +20,7 @@ export class AppComponent implements OnInit {
   ) {
     // Initialize the isLoggedIn$ property in the constructor
     this.isLoggedIn$ = this.authService.isLoggedIn$;
-  }
-
-  ngOnInit(): void {
-    // Subscribe to the global auth state
-    this.isLoggedIn$ = this.authService.isLoggedIn$;
+    this.userRole$ = this.authService.userRole$;
   }
 
   logout() {

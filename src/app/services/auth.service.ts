@@ -10,9 +10,11 @@ import {UserResponseDto} from "../dto/user-response.dto";
 export class AuthService {
   // BehaviorSubject to hold the current state of login
   private readonly loggedIn = new BehaviorSubject<boolean>(false);
+  private readonly userRole = new BehaviorSubject<string>('');
 
   // Observable for other components to subscribe to
   public isLoggedIn$ = this.loggedIn.asObservable();
+  public userRole$ = this.userRole.asObservable();
 
   constructor(
     private readonly http: HttpClient,
@@ -27,6 +29,7 @@ export class AuthService {
         tap((response: any) => {
           if (response.success == 1) {
             this.loggedIn.next(true);
+            this.userRole.next(response.data.role);
             localStorage.setItem('token', `Bearer ${response.data.token}`);  // Save the token in localStorage
           }
         })
@@ -37,6 +40,7 @@ export class AuthService {
     const bearerToken = localStorage.getItem('token')
     localStorage.removeItem('token');
     this.loggedIn.next(false);
+    this.userRole.next('');
     return this.http.post(`${environment.apiURl}/auth/logout`, null, {headers: {'Authorization': `Bearer ${bearerToken}`}});
   }
 
@@ -68,5 +72,9 @@ export class AuthService {
     }
 
     return userData
+  }
+
+  getUserRole(): string {
+    return this.userRole.value
   }
 }
