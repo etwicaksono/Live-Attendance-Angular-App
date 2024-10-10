@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-dashboard',
@@ -13,8 +11,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly router: Router,
-    private readonly dialog: MatDialog,
   ) {
   }
 
