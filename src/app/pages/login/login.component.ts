@@ -36,7 +36,6 @@ export class LoginComponent {
         error: (err) => {
           console.error('Login failed', err);
           this.openDialog(err.error.message);
-          // Optionally show an error message to the user
         }
       });
     }

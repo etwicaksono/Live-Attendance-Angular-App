@@ -31,7 +31,7 @@ export class DashboardComponent {
         // Optionally show an error message to the user
       }
     }); // Call logout from AuthService
-    this.router.navigate(['/login']); // Redirect to login page after logout
+    this.router.navigate(['']); // Redirect to login page after logout
   }
 
   openDialog(message: string) {
