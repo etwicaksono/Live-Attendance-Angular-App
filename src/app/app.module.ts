@@ -9,7 +9,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {DashboardComponent} from './pages/dashboard/dashboard.component';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {MatDialogActions, MatDialogContent} from "@angular/material/dialog";
-import {ProfileComponent} from './components/profile/profile.component';
+import {ProfileComponent} from './pages/profile/profile.component';
 import {HomeComponent} from './pages/home/home.component';
 import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
