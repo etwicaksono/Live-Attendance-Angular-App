@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environment/environment";
+import {UserResponseDto} from "../dto/user-response.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -45,9 +46,9 @@ export class AuthService {
   }
 
   // Method to get the user profile data
-  async getUserProfile() {
+  async getUserProfile(): Promise<UserResponseDto> {
     const user = localStorage.getItem('user')
-    let userData = {}
+    let userData = new UserResponseDto()
 
     if (user) {
       console.debug('retrieve data from localstorage')

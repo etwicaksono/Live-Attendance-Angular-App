@@ -2,8 +2,7 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {NotificationDialogComponent} from "../../components/notification-dialog/notification-dialog.component";
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
   selector: 'app-login',
@@ -17,7 +16,7 @@ export class LoginComponent {
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
-    private readonly dialog: MatDialog,
+    private readonly notificationService: NotificationService,
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -30,21 +29,15 @@ export class LoginComponent {
       const {username, password} = this.loginForm.value;
       this.authService.login(username, password).subscribe({
         next: () => {
-          this.openDialog('Login successful');
+          this.notificationService.showSuccess('Login successful');
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           console.error('Login failed', err);
-          this.openDialog(err.error.message);
+          this.notificationService.showError(err.error.message);
         }
       });
     }
-  }
-
-  openDialog(message: string) {
-    this.dialog.open(NotificationDialogComponent, {
-      data: {message}
-    });
   }
 
 }
