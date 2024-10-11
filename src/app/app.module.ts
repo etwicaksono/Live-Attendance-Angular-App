@@ -13,6 +13,7 @@ import {ProfileComponent} from './pages/profile/profile.component';
 import {HomeComponent} from './pages/home/home.component';
 import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {PresencesComponent} from './pages/presences/presences.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     LoginComponent,
     DashboardComponent,
     ProfileComponent,
-    HomeComponent
+    HomeComponent,
+    PresencesComponent
   ],
   imports: [
     BrowserModule,

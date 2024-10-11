@@ -5,12 +5,14 @@ import {DashboardComponent} from "./pages/dashboard/dashboard.component";
 import {AuthGuard} from "./guards/auth.guard";
 import {ProfileComponent} from "./pages/profile/profile.component";
 import {HomeComponent} from "./pages/home/home.component";
+import {PresencesComponent} from "./pages/presences/presences.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent, canActivate: [AuthGuard]},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: 'my-profile', component: ProfileComponent, canActivate: [AuthGuard]},
+  {path: 'presences', component: PresencesComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
