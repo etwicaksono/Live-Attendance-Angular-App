@@ -24,15 +24,18 @@
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td>1</td>
-        <td>employee</td>
-        <td>check in</td>
-        <td>check out</td>
-        <td>check in coordinate</td>
-        <td>check out coordinate</td>
+      <tr
+        *ngFor="let presence of presences; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ presence?.Employee?.name }}</td>
+        <td>{{ presence?.checkIn | date : "dd/MM/yy HH:mm:ss" }}</td>
+        <td>{{ presence?.checkOut | date : "dd/MM/yy HH:mm:ss" }}</td>
+        <td>{{ presence?.checkInCoordinates }}</td>
+        <td>{{ presence?.checkOutCoordinates }}</td>
         <td>
-          <button class="btn btn-info mx-2">View</button>
+          <button class="btn btn-info mx-2" title="View"><i class="fa fa-eye"></i></button>
+          <button *ngIf="(userRole$ | async) == 'admin'" class="btn btn-danger mx-2" title="Delete"><i
+            class="fa fa-trash"></i></button>
         </td>
       </tr>
       </tbody>

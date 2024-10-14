@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../../environment/environment";
 import {NotificationService} from "./notification.service";
+import {Presence} from "../models/presence";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,6 @@ export class PresenceService {
     private readonly notificationService: NotificationService,
   ) {
   }
-
 
   checkStatus(): PresenceStatus {
     type PresenceStatusKey = keyof typeof PresenceStatus;
@@ -45,6 +45,12 @@ export class PresenceService {
     })
 
     return presenceStatus ? PresenceStatus[presenceStatus as PresenceStatusKey] : PresenceStatus.NEED_CHECK_IN
+  }
+
+
+  getPresences(): Observable<any> {
+    const bearerToken = localStorage.getItem(this.authSvc.tokenKey)
+    return this.http.get(`${environment.apiURl}/presence/list`, {headers: {'Authorization': `Bearer ${bearerToken}`}})
   }
 }
 
