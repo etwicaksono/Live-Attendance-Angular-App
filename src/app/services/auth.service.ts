@@ -13,7 +13,7 @@ export class AuthService {
   // BehaviorSubject to hold the current state of login
   private readonly loggedIn = new BehaviorSubject<boolean>(false);
   private readonly userRole = new BehaviorSubject<string>('');
-  private readonly tokenKey = 'token'
+  public readonly tokenKey = 'token'
   private readonly userKey = 'user'
   private readonly tokenExpiredKey = 'tokenExpired'
   private readonly tokenRefreshableKey = 'tokenRefreshable'

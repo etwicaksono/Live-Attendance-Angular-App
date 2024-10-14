@@ -1,10 +1,12 @@
 <div class="container">
   <h2>Daftar Kehadiran</h2>
   <div class="d-flex justify-content-end">
-    <button class="btn btn-success mb-3">
+    <button *ngIf="(presenceStatus|async) == PresenceStatus.NEED_CHECK_IN" class="btn btn-success mb-3">
       <i class="fa fa-camera"></i> Check In
     </button>
-    <button class="btn btn-danger mb-3">
+    <button
+      *ngIf="(presenceStatus|async) == PresenceStatus.NEED_CHECK_OUT||(presenceStatus|async) == PresenceStatus.CHECKED_OUT"
+      class="btn btn-danger mb-3" [ngClass]="{'disabled': (presenceStatus|async) == PresenceStatus.CHECKED_OUT}">
       <i class="fa fa-camera"></i> Check Out
     </button>
   </div>
@@ -29,7 +31,6 @@
         <td>presence type</td>
         <td>
           <button class="btn btn-info mx-2">View</button>
-          <button>Checkout</button>
         </td>
       </tr>
       </tbody>
