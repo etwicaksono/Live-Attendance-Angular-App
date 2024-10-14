@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, tap} from "rxjs";
+import {BehaviorSubject, catchError, Observable, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environment/environment";
 import {UserResponseDto} from "../dto/user-response.dto";
@@ -66,6 +66,7 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.tokenExpiredKey);
     localStorage.removeItem(this.tokenRefreshableKey);
+    localStorage.removeItem(this.userKey);
     this.loggedIn.next(false);
     this.userRole.next('');
     return this.http.post(`${environment.apiURl}/auth/logout`, null, {headers: {'Authorization': `Bearer ${bearerToken}`}});
@@ -133,7 +134,14 @@ export class AuthService {
             if (response.success == 1) {
               localStorage.setItem(this.userKey, JSON.stringify(response.data));  // Save the token in localStorage
               userData = response.data
+            } else {
+              this.notificationService.showError(response.message);
             }
+          }),
+          catchError((error: any, caught: Observable<any>): any => {
+            // Handle the error here
+            console.error('An error occurred:', error);
+            this.notificationService.showError(error.error.message);
           })
         ).toPromise();
     }
