@@ -4,6 +4,7 @@ import {AuthService} from "./services/auth.service";
 import {Router} from "@angular/router";
 import {NotificationService} from "./services/notification.service";
 import {StateService} from "./services/state.service";
+import {UtilService} from "./services/util.service";
 
 @Component({
   selector: 'app-root',
@@ -13,22 +14,25 @@ import {StateService} from "./services/state.service";
 export class AppComponent implements OnInit {
   isLoggedIn$: Observable<boolean>;
   userRole$: Observable<string>;
-  initialName: string = '';
+  initialName: Observable<string>;
 
   constructor(
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly notificationService: NotificationService,
     private readonly stateSvc: StateService,
+    private readonly utilSvc: UtilService,
   ) {
-    this.isLoggedIn$ = this.authService.isLoggedIn$;
+    this.isLoggedIn$ = this.stateSvc.getIsLoggedIn()
     this.userRole$ = this.stateSvc.getUserRole();
-    this.stateSvc.getUserRole().subscribe(value => console.log('this.stateSvc.getUserRole(): ', value))
+    this.initialName = this.stateSvc.getInitialName();
   }
 
   ngOnInit(): void {
-    this.authService.getUserProfile().then((userProfile) => {
-      this.initialName = this.getInitials(userProfile.name);
+    this.authService.getEmployeeProfile().then((userProfile) => {
+      if (userProfile) {
+        this.stateSvc.setInitialName(this.utilSvc.getInitials(userProfile.name));
+      }
     });
   }
 
@@ -44,17 +48,5 @@ export class AppComponent implements OnInit {
       }
     }); // Call logout from AuthService
     this.router.navigate(['']); // Redirect to login page after logout
-  }
-
-  getInitials(fullName: string): string {
-    if (!fullName) return '';
-
-    // Split the full name into words
-    const names = fullName.split(' ');
-
-    // Get the first letter of each word and join them
-    const initials = names.map(name => name.charAt(0).toUpperCase()).join('');
-
-    return initials.substring(0, 2); // Return only the first two initials
   }
 }

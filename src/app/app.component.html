@@ -56,7 +56,7 @@
             aria-expanded="false"
           >
             <span class="initial-circle d-flex justify-content-center align-items-center me-2">
-              {{ (initialName) | uppercase }}
+              {{ (initialName|async) | uppercase }}
             </span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">

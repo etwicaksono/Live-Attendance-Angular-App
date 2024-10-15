@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, catchError, Observable, tap} from "rxjs";
+import {catchError, Observable, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environment/environment";
 import {UserResponseDto} from "../dto/user-response.dto";
-import {toZonedTime, fromZonedTime} from 'date-fns-tz';
+import {toZonedTime} from 'date-fns-tz';
 import {NotificationService} from "./notification.service";
 import {StateService} from "./state.service";
 import {constant} from "../../util/constant";
@@ -17,26 +17,23 @@ export class AuthService {
     private readonly notificationService: NotificationService,
     private readonly stateSvc: StateService,
   ) {
-    const isLoggedIn = !!localStorage.getItem(this.tokenKey); // Check if token exists
-    this.loggedIn.next(isLoggedIn);
+    const isLoggedIn = this.isLoggedIn()
+    this.stateSvc.setIsLoggedIn(isLoggedIn);
   }
 
   // BehaviorSubject to hold the current state of login
-  private readonly loggedIn = new BehaviorSubject<boolean>(false);
   public readonly tokenKey = 'token'
   private readonly employeeKey = 'employee'
   private readonly tokenExpiredKey = 'tokenExpired'
   private readonly tokenRefreshableKey = 'tokenRefreshable'
 
-  // Observable for other components to subscribe to
-  public isLoggedIn$ = this.loggedIn.asObservable();
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(`${environment.apiURl}/auth/login`, {username, password})
       .pipe(
         tap((response: any) => {
           if (response.success == 1) {
-            this.loggedIn.next(true);
+            this.stateSvc.setIsLoggedIn(true);
             this.stateSvc.setUserRole(response.data.role);
             localStorage.setItem(this.tokenKey, `Bearer ${response.data.token}`)
             localStorage.setItem(this.tokenExpiredKey, response.meta.expired_at)
@@ -52,7 +49,7 @@ export class AuthService {
       .pipe(
         tap((response: any) => {
           if (response.success == 1) {
-            this.loggedIn.next(true);
+            this.stateSvc.setIsLoggedIn(true);
             this.stateSvc.setUserRole(response.data.role);
             localStorage.setItem(this.tokenKey, `Bearer ${response.data.token}`)
             localStorage.setItem(this.tokenExpiredKey, response.meta.expired_at)
@@ -68,7 +65,7 @@ export class AuthService {
     localStorage.removeItem(this.tokenExpiredKey);
     localStorage.removeItem(this.tokenRefreshableKey);
     localStorage.removeItem(this.employeeKey);
-    this.loggedIn.next(false);
+    this.stateSvc.setIsLoggedIn(false);
     this.stateSvc.setUserRole(constant.userRole.default);
     return this.http.post(`${environment.apiURl}/auth/logout`, null, {headers: {'Authorization': `Bearer ${bearerToken}`}});
   }
@@ -128,15 +125,15 @@ export class AuthService {
   }
 
   // Method to get the user profile data
-  async getUserProfile(): Promise<UserResponseDto> {
-    const user = localStorage.getItem(this.employeeKey)
+  async getEmployeeProfile(): Promise<UserResponseDto> {
+    const employee = localStorage.getItem(this.employeeKey)
     let userData = new UserResponseDto()
 
-    if (user) {
-      console.debug('retrieve data from localstorage')
-      userData = JSON.parse(user);
+    if (employee) {
+      console.debug('retrieve employee profile data from localstorage')
+      userData = JSON.parse(employee);
     } else {
-      console.debug('retrieve data from api')
+      console.debug('retrieve employee profile data from api')
       const bearerToken = localStorage.getItem(this.tokenKey)
       await this.http.get(`${environment.apiURl}/my-profile`, {headers: {'Authorization': `Bearer ${bearerToken}`}})
         .pipe(

@@ -1,23 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Observable} from "rxjs";
-import {AuthService} from "../../services/auth.service";
+import {StateService} from "../../services/state.service";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   isLoggedIn$: Observable<boolean>;
 
-  constructor(private readonly authService: AuthService) {
-    // Initialize the isLoggedIn$ property in the constructor
-    this.isLoggedIn$ = this.authService.isLoggedIn$;
+  constructor(private readonly stateSvc: StateService) {
+    this.isLoggedIn$ = this.stateSvc.getIsLoggedIn()
   }
-
-  ngOnInit(): void {
-    // Subscribe to the global auth state
-    this.isLoggedIn$ = this.authService.isLoggedIn$;
-  }
-
 }

@@ -18,7 +18,7 @@ export class ProfileComponent implements OnInit {
 
   // Fetch user profile data from the AuthService
   async getUserProfile() {
-    this.user = await this.authService.getUserProfile();
+    this.user = await this.authService.getEmployeeProfile();
     console.log(this.user);
   }
 }
