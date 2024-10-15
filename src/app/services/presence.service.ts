@@ -1,24 +1,22 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {environment} from "../../environment/environment";
 import {NotificationService} from "./notification.service";
 import {constant} from "../../util/constant";
+import {PresenceStatus} from "../../util/enum";
+import {StateService} from "./state.service";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class PresenceService {
-  // BehaviorSubject to hold the current state of presence status
-  private readonly presenceStatus = new BehaviorSubject<PresenceStatus>(PresenceStatus.NEED_CHECK_IN);
-
-  // Observable for other components to subscribe to
-  public presenceStatus$ = this.presenceStatus.asObservable();
 
   constructor(
     private readonly http: HttpClient,
-    private readonly notificationService: NotificationService,
+    private readonly notifSvc: NotificationService,
+    private readonly stateSvc: StateService,
   ) {
   }
 
@@ -30,15 +28,15 @@ export class PresenceService {
     this.http.get(`${environment.apiURl}/presence/check-status`, {headers: {'Authorization': `Bearer ${bearerToken}`}}).subscribe({
       next: (response: any) => {
         if (response.success == 1) {
-          this.presenceStatus.next(response.data.status);
+          this.stateSvc.setPresenceStatus(response.data.status);
         } else {
           console.error('Presence status checking failed', response.message);
-          this.notificationService.showError(response.message);
+          this.notifSvc.showError(response.message);
         }
       },
       error: (err) => {
         console.error('Presence status checking failed', err);
-        this.notificationService.showError(err.error.message);
+        this.notifSvc.showError(err.error.message);
       }
     })
 
@@ -50,10 +48,4 @@ export class PresenceService {
     const bearerToken = localStorage.getItem(constant.localStorageKey.token)
     return this.http.get(`${environment.apiURl}/presence/list`, {headers: {'Authorization': `Bearer ${bearerToken}`}})
   }
-}
-
-export enum PresenceStatus {
-  NEED_CHECK_IN = 'NEED_CHECK_IN',
-  NEED_CHECK_OUT = 'NEED_CHECK_OUT',
-  CHECKED_OUT = 'CHECKED_OUT'
 }

@@ -1,0 +1,5 @@
+export enum PresenceStatus {
+  NEED_CHECK_IN = 'NEED_CHECK_IN',
+  NEED_CHECK_OUT = 'NEED_CHECK_OUT',
+  CHECKED_OUT = 'CHECKED_OUT'
+}

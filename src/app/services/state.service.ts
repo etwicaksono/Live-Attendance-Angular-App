@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {constant} from "../../util/constant";
+import {PresenceStatus} from "../../util/enum";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class StateService {
   private readonly isLoggedIn = new BehaviorSubject<boolean>(false);
   private readonly userRole = new BehaviorSubject<string>('default');
   private readonly initialName = new BehaviorSubject<string>('U');
+  private readonly presenceStatus = new BehaviorSubject<PresenceStatus>(PresenceStatus.NEED_CHECK_IN);
 
   // User's Login State
   getIsLoggedIn(): Observable<boolean> {
@@ -47,5 +49,14 @@ export class StateService {
 
   setInitialName(initialName: string): void {
     this.initialName.next(initialName);
+  }
+
+  // Presence status
+  getPresenceStatus(): Observable<PresenceStatus> {
+    return this.presenceStatus.asObservable();
+  }
+
+  setPresenceStatus(presenceStatus: PresenceStatus): void {
+    this.presenceStatus.next(presenceStatus);
   }
 }
