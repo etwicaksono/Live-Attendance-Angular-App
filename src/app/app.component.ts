@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   ) {
     this.isLoggedIn$ = this.authService.isLoggedIn$;
     this.userRole$ = this.authService.userRole$;
+    this.authService.userRole$.subscribe(value => console.log('this.authService.userRole$: ', value))
   }
 
   ngOnInit(): void {

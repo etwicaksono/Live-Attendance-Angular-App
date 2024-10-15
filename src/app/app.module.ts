@@ -14,6 +14,7 @@ import {HomeComponent} from './pages/home/home.component';
 import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {PresencesComponent} from './pages/presences/presences.component';
+import {AuthService} from "./services/auth.service";
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import {PresencesComponent} from './pages/presences/presences.component';
     }),
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    AuthService,
   ],
   bootstrap: [AppComponent]
 })

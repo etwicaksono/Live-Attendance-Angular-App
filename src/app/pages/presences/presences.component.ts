@@ -26,7 +26,7 @@ export class PresencesComponent implements OnInit {
   ) {
     this.presenceStatus = this.presenceSvc.presenceStatus$
     this.userRole$ = this.authService.userRole$;
-    console.log(' this.userRole$: ', this.userRole$)
+    this.userRole$.subscribe(value => console.log('this.userRole$: ', value))
   }
 
   ngOnInit(): void {
