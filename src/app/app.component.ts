@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {AuthService} from "./services/auth.service";
 import {Router} from "@angular/router";
 import {NotificationService} from "./services/notification.service";
+import {StateService} from "./services/state.service";
 
 @Component({
   selector: 'app-root',
@@ -18,10 +19,11 @@ export class AppComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly notificationService: NotificationService,
+    private readonly stateSvc: StateService,
   ) {
     this.isLoggedIn$ = this.authService.isLoggedIn$;
-    this.userRole$ = this.authService.userRole$;
-    this.authService.userRole$.subscribe(value => console.log('this.authService.userRole$: ', value))
+    this.userRole$ = this.stateSvc.getUserRole();
+    this.stateSvc.getUserRole().subscribe(value => console.log('this.stateSvc.getUserRole(): ', value))
   }
 
   ngOnInit(): void {

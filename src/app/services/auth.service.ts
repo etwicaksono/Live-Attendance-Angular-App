@@ -5,30 +5,31 @@ import {environment} from "../../environment/environment";
 import {UserResponseDto} from "../dto/user-response.dto";
 import {toZonedTime, fromZonedTime} from 'date-fns-tz';
 import {NotificationService} from "./notification.service";
+import {StateService} from "./state.service";
+import {constant} from "../../util/constant";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly notificationService: NotificationService,
+    private readonly stateSvc: StateService,
+  ) {
+    const isLoggedIn = !!localStorage.getItem(this.tokenKey); // Check if token exists
+    this.loggedIn.next(isLoggedIn);
+  }
+
   // BehaviorSubject to hold the current state of login
   private readonly loggedIn = new BehaviorSubject<boolean>(false);
-  private readonly userRole = new BehaviorSubject<string>('default');
   public readonly tokenKey = 'token'
-  private readonly userKey = 'user'
+  private readonly employeeKey = 'employee'
   private readonly tokenExpiredKey = 'tokenExpired'
   private readonly tokenRefreshableKey = 'tokenRefreshable'
 
   // Observable for other components to subscribe to
   public isLoggedIn$ = this.loggedIn.asObservable();
-  public userRole$ = this.userRole.asObservable();
-
-  constructor(
-    private readonly http: HttpClient,
-    private readonly notificationService: NotificationService,
-  ) {
-    const isLoggedIn = !!localStorage.getItem(this.tokenKey); // Check if token exists
-    this.loggedIn.next(isLoggedIn);
-  }
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(`${environment.apiURl}/auth/login`, {username, password})
@@ -36,7 +37,7 @@ export class AuthService {
         tap((response: any) => {
           if (response.success == 1) {
             this.loggedIn.next(true);
-            this.userRole.next(response.data.role);
+            this.stateSvc.setUserRole(response.data.role);
             localStorage.setItem(this.tokenKey, `Bearer ${response.data.token}`)
             localStorage.setItem(this.tokenExpiredKey, response.meta.expired_at)
             localStorage.setItem(this.tokenRefreshableKey, response.meta.refreshable_till)
@@ -52,7 +53,7 @@ export class AuthService {
         tap((response: any) => {
           if (response.success == 1) {
             this.loggedIn.next(true);
-            this.userRole.next(response.data.role);
+            this.stateSvc.setUserRole(response.data.role);
             localStorage.setItem(this.tokenKey, `Bearer ${response.data.token}`)
             localStorage.setItem(this.tokenExpiredKey, response.meta.expired_at)
             localStorage.setItem(this.tokenRefreshableKey, response.meta.refreshable_till)
@@ -66,9 +67,9 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.tokenExpiredKey);
     localStorage.removeItem(this.tokenRefreshableKey);
-    localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.employeeKey);
     this.loggedIn.next(false);
-    this.userRole.next('');
+    this.stateSvc.setUserRole(constant.userRole.default);
     return this.http.post(`${environment.apiURl}/auth/logout`, null, {headers: {'Authorization': `Bearer ${bearerToken}`}});
   }
 
@@ -128,7 +129,7 @@ export class AuthService {
 
   // Method to get the user profile data
   async getUserProfile(): Promise<UserResponseDto> {
-    const user = localStorage.getItem(this.userKey)
+    const user = localStorage.getItem(this.employeeKey)
     let userData = new UserResponseDto()
 
     if (user) {
@@ -141,7 +142,7 @@ export class AuthService {
         .pipe(
           tap((response: any) => {
             if (response.success == 1) {
-              localStorage.setItem(this.userKey, JSON.stringify(response.data));  // Save the token in localStorage
+              localStorage.setItem(this.employeeKey, JSON.stringify(response.data));  // Save the token in localStorage
               userData = response.data
             } else {
               this.notificationService.showError(response.message);
@@ -156,9 +157,5 @@ export class AuthService {
     }
 
     return userData
-  }
-
-  getUserRole(): string {
-    return this.userRole.value
   }
 }

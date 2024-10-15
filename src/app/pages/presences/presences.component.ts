@@ -5,6 +5,7 @@ import {Presence} from "../../models/presence";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {NotificationService} from "../../services/notification.service";
 import {AuthService} from "../../services/auth.service";
+import {StateService} from "../../services/state.service";
 
 @Component({
   selector: 'app-presences',
@@ -23,10 +24,11 @@ export class PresencesComponent implements OnInit {
     private readonly presenceSvc: PresenceService,
     private modalService: NgbModal,
     private readonly notificationService: NotificationService,
+    private readonly stateSvc: StateService,
   ) {
     this.presenceStatus = this.presenceSvc.presenceStatus$
-    this.userRole$ = this.authService.userRole$;
-    this.userRole$.subscribe(value => console.log('this.userRole$: ', value))
+    this.userRole$ = this.stateSvc.getUserRole();
+    this.stateSvc.getUserRole().subscribe(value => console.log('this.stateSvc.getUserRole(): ', value))
   }
 
   ngOnInit(): void {
