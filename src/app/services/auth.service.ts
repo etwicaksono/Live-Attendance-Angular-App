@@ -97,6 +97,15 @@ export class AuthService {
           error: (err) => {
             console.error('Refresh token failed', err);
             this.notificationService.showError(err.error.message);
+            this.logout().subscribe({
+              next: () => {
+                this.notificationService.showSuccess('Logout successful');
+              },
+              error: (err) => {
+                console.error('Logout failed', err);
+                this.notificationService.showError(err.error.message);
+              }
+            })
           }
         })
       } else {
