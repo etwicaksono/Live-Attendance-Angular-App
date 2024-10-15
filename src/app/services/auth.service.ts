@@ -21,12 +21,6 @@ export class AuthService {
     this.stateSvc.setIsLoggedIn(isLoggedIn);
   }
 
-  // BehaviorSubject to hold the current state of login
-  public readonly tokenKey = 'token'
-  private readonly employeeKey = 'employee'
-  private readonly tokenExpiredKey = 'tokenExpired'
-  private readonly tokenRefreshableKey = 'tokenRefreshable'
-
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(`${environment.apiURl}/auth/login`, {username, password})
@@ -35,36 +29,36 @@ export class AuthService {
           if (response.success == 1) {
             this.stateSvc.setIsLoggedIn(true);
             this.stateSvc.setUserRole(response.data.role);
-            localStorage.setItem(this.tokenKey, `Bearer ${response.data.token}`)
-            localStorage.setItem(this.tokenExpiredKey, response.meta.expired_at)
-            localStorage.setItem(this.tokenRefreshableKey, response.meta.refreshable_till)
+            localStorage.setItem(constant.localStorageKey.token, `Bearer ${response.data.token}`)
+            localStorage.setItem(constant.localStorageKey.tokenExpiredAt, response.meta.expired_at)
+            localStorage.setItem(constant.localStorageKey.tokenRefreshableTill, response.meta.refreshable_till)
           }
         })
       );
   }
 
   refreshToken(): Observable<any> {
-    const bearerToken = localStorage.getItem(this.tokenKey)
+    const bearerToken = localStorage.getItem(constant.localStorageKey.token)
     return this.http.post(`${environment.apiURl}/auth/refresh-token`, null, {headers: {'Authorization': `Bearer ${bearerToken}`}})
       .pipe(
         tap((response: any) => {
           if (response.success == 1) {
             this.stateSvc.setIsLoggedIn(true);
             this.stateSvc.setUserRole(response.data.role);
-            localStorage.setItem(this.tokenKey, `Bearer ${response.data.token}`)
-            localStorage.setItem(this.tokenExpiredKey, response.meta.expired_at)
-            localStorage.setItem(this.tokenRefreshableKey, response.meta.refreshable_till)
+            localStorage.setItem(constant.localStorageKey.token, `Bearer ${response.data.token}`)
+            localStorage.setItem(constant.localStorageKey.tokenExpiredAt, response.meta.expired_at)
+            localStorage.setItem(constant.localStorageKey.tokenRefreshableTill, response.meta.refreshable_till)
           }
         })
       );
   }
 
   logout(): Observable<any> {
-    const bearerToken = localStorage.getItem(this.tokenKey)
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.tokenExpiredKey);
-    localStorage.removeItem(this.tokenRefreshableKey);
-    localStorage.removeItem(this.employeeKey);
+    const bearerToken = localStorage.getItem(constant.localStorageKey.token)
+    localStorage.removeItem(constant.localStorageKey.token);
+    localStorage.removeItem(constant.localStorageKey.tokenExpiredAt);
+    localStorage.removeItem(constant.localStorageKey.tokenRefreshableTill);
+    localStorage.removeItem(constant.localStorageKey.employee);
     this.stateSvc.setIsLoggedIn(false);
     this.stateSvc.setUserRole(constant.userRole.default);
     return this.http.post(`${environment.apiURl}/auth/logout`, null, {headers: {'Authorization': `Bearer ${bearerToken}`}});
@@ -76,10 +70,10 @@ export class AuthService {
     const currentTime = new Date();
     const currentTimeUTC = toZonedTime(currentTime, 'UTC');
     // Get expired time in UTC
-    const storedExpiredAuth = localStorage.getItem(this.tokenExpiredKey)
+    const storedExpiredAuth = localStorage.getItem(constant.localStorageKey.tokenExpiredAt)
     const storedExpiredAuthUTC = toZonedTime(new Date(`${storedExpiredAuth}Z`), 'UTC'); // Append 'Z' to indicate it's UTC
     // Get refreshable time in UTC
-    const storedRefreshable = localStorage.getItem(this.tokenRefreshableKey)
+    const storedRefreshable = localStorage.getItem(constant.localStorageKey.tokenRefreshableTill)
     const storedRefreshableUTC = toZonedTime(new Date(`${storedRefreshable}Z`), 'UTC'); // Append 'Z' to indicate it's UTC
 
     // When token is expired
@@ -121,12 +115,12 @@ export class AuthService {
       }
     }
 
-    return !!localStorage.getItem(this.tokenKey);
+    return !!localStorage.getItem(constant.localStorageKey.token);
   }
 
   // Method to get the user profile data
   async getEmployeeProfile(): Promise<UserResponseDto> {
-    const employee = localStorage.getItem(this.employeeKey)
+    const employee = localStorage.getItem(constant.localStorageKey.employee)
     let userData = new UserResponseDto()
 
     if (employee) {
@@ -134,12 +128,12 @@ export class AuthService {
       userData = JSON.parse(employee);
     } else {
       console.debug('retrieve employee profile data from api')
-      const bearerToken = localStorage.getItem(this.tokenKey)
+      const bearerToken = localStorage.getItem(constant.localStorageKey.token)
       await this.http.get(`${environment.apiURl}/my-profile`, {headers: {'Authorization': `Bearer ${bearerToken}`}})
         .pipe(
           tap((response: any) => {
             if (response.success == 1) {
-              localStorage.setItem(this.employeeKey, JSON.stringify(response.data));  // Save the token in localStorage
+              localStorage.setItem(constant.localStorageKey.employee, JSON.stringify(response.data));  // Save the token in localStorage
               userData = response.data
             } else {
               this.notificationService.showError(response.message);

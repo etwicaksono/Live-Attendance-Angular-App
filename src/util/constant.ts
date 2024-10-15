@@ -3,6 +3,8 @@ export const constant = {
   localStorageKey: {
     token: 'token',
     employee: 'employee',
+    tokenExpiredAt: 'tokenExpiredAt',
+    tokenRefreshableTill: 'tokenRefreshableTill',
   },
 
 //   User's role
