@@ -15,6 +15,7 @@ import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {PresencesComponent} from './pages/presences/presences.component';
 import {AuthService} from "./services/auth.service";
+import { PresenceModalComponent } from './components/presence-modal/presence-modal.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {AuthService} from "./services/auth.service";
     DashboardComponent,
     ProfileComponent,
     HomeComponent,
-    PresencesComponent
+    PresencesComponent,
+    PresenceModalComponent
   ],
   imports: [
     BrowserModule,

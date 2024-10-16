@@ -7,6 +7,7 @@ import {NotificationService} from "../../services/notification.service";
 import {AuthService} from "../../services/auth.service";
 import {StateService} from "../../services/state.service";
 import {PresenceStatus} from "../../../util/enum";
+import {PresenceModalComponent} from "../../components/presence-modal/presence-modal.component";
 
 @Component({
   selector: 'app-presences',
@@ -17,8 +18,6 @@ export class PresencesComponent implements OnInit {
   userRole$: Observable<string>;
   presenceStatus: Observable<PresenceStatus>
   presences: Presence[] = [];
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
 
   constructor(
     private readonly authService: AuthService,
@@ -31,6 +30,8 @@ export class PresencesComponent implements OnInit {
     this.userRole$ = this.stateSvc.getUserRole();
     this.stateSvc.getUserRole().subscribe(value => console.log('this.stateSvc.getUserRole(): ', value))
   }
+
+  protected readonly PresenceStatus = PresenceStatus;
 
   ngOnInit(): void {
     this.presenceSvc.checkStatus()
@@ -66,5 +67,10 @@ export class PresencesComponent implements OnInit {
     });
   }
 
-  protected readonly PresenceStatus = PresenceStatus;
+
+  openCheckinModal(): void {
+    const modalRef = this.modalService.open(PresenceModalComponent);
+    modalRef.componentInstance.mode = 'checkin';
+    modalRef.componentInstance.refreshData.subscribe(() => this.loadPresences());
+  }
 }
